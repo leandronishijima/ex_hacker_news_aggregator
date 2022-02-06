@@ -6,10 +6,11 @@ defmodule HackerNewsAggregator.Application do
   use Application
 
   @impl true
-  def start(_type, _args) do
+  def start(_type, args) do
     children = [
       # Starts a worker by calling: HackerNewsAggregator.Worker.start_link(arg)
       # {HackerNewsAggregator.Worker, arg}
+      HackerNewsAggregator.Core.FetchTopStories.child_spec(args)
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
