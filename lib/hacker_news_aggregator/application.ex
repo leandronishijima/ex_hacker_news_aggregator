@@ -10,7 +10,8 @@ defmodule HackerNewsAggregator.Application do
     children = [
       # Starts a worker by calling: HackerNewsAggregator.Worker.start_link(arg)
       # {HackerNewsAggregator.Worker, arg}
-      HackerNewsAggregator.Core.FetchTopStories.child_spec(args)
+      HackerNewsAggregator.Core.FetchTopStories.child_spec(args),
+      HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args)
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
