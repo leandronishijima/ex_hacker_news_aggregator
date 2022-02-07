@@ -22,7 +22,8 @@ defmodule HackerNewsAggregator.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:finch, "~> 0.10"}
+      {:finch, "~> 0.10"},
+      {:jason, "~> 1.3"}
     ]
   end
 end
