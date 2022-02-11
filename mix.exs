@@ -14,7 +14,7 @@ defmodule HackerNewsAggregator.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :plug_cowboy],
       mod: {HackerNewsAggregator.Application, []}
     ]
   end
@@ -23,7 +23,8 @@ defmodule HackerNewsAggregator.MixProject do
   defp deps do
     [
       {:finch, "~> 0.10"},
-      {:jason, "~> 1.3"}
+      {:jason, "~> 1.3"},
+      {:plug_cowboy, "~> 2.5"}
     ]
   end
 end

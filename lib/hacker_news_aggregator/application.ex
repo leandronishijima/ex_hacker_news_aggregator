@@ -12,7 +12,12 @@ defmodule HackerNewsAggregator.Application do
       # {HackerNewsAggregator.Worker, arg}
       HackerNewsAggregator.Core.Database.child_spec(args),
       HackerNewsAggregator.Core.FetchTopStories.child_spec(args),
-      HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args)
+      HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args),
+      Plug.Cowboy.child_spec(
+        scheme: :http,
+        plug: HackerNewsAggregator.Endpoint,
+        options: [port: 4001]
+      )
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
