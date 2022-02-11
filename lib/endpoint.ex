@@ -1,7 +1,10 @@
 defmodule HackerNewsAggregator.Endpoint do
   use Plug.Router
 
-  alias HackerNewsAggregator.Core.Database
+  alias HackerNewsAggregator.{
+    Core.Database,
+    HackerNewsClient.ApiClient
+  }
 
   plug(Plug.Logger)
   plug(:match)
@@ -12,13 +15,27 @@ defmodule HackerNewsAggregator.Endpoint do
   get "/top_stories" do
     top_stories = GenServer.call(Database, :get_top_stories)
 
-    {:ok, json_top_stories} =
+    {:ok, response_json} =
+      %{"top_stories" => top_stories}
+      |> Jason.encode()
+
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, response_json)
+  end
+
+  get "/item" do
+    {:ok, item} = ApiClient.item(30_290_225)
+
+    {:ok, response_json} =
       %{
-        "top_stories" => top_stories
+        "item" => item
       }
       |> Jason.encode()
 
-    send_resp(conn, 200, json_top_stories)
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, response_json)
   end
 
   match _ do
