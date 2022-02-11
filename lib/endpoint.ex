@@ -15,23 +15,17 @@ defmodule HackerNewsAggregator.Endpoint do
   get "/top_stories" do
     top_stories = GenServer.call(Database, :get_top_stories)
 
-    {:ok, response_json} =
-      %{"top_stories" => top_stories}
-      |> Jason.encode()
+    {:ok, response_json} = Jason.encode(%{"top_stories" => top_stories})
 
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(200, response_json)
   end
 
-  get "/item" do
-    {:ok, item} = ApiClient.item(30_290_225)
+  get "/item/:id" do
+    {:ok, item} = ApiClient.item(id)
 
-    {:ok, response_json} =
-      %{
-        "item" => item
-      }
-      |> Jason.encode()
+    {:ok, response_json} = Jason.encode(%{"item" => item})
 
     conn
     |> put_resp_content_type("application/json")
