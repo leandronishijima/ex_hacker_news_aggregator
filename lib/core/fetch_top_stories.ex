@@ -6,9 +6,7 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
     HackerNewsClient.ApiClient
   }
 
-  # @five_minutes_in_ms 300_000
-  # 2 seconds
-  @five_minutes_in_ms 2_000
+  @five_minutes_in_ms 300_000
 
   def child_spec(init_arg) do
     %{
@@ -23,6 +21,7 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
 
   @impl true
   def init(state) do
+    push_top_stories()
     scheduled_process()
 
     {:ok, state}
@@ -30,12 +29,15 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
 
   @impl true
   def handle_info(:fetch, state) do
+    push_top_stories()
     scheduled_process()
 
+    {:noreply, state}
+  end
+
+  defp push_top_stories do
     {:ok, top_stories} = ApiClient.top_stories()
     GenServer.cast(Database, {:push, top_stories})
-
-    {:noreply, state}
   end
 
   defp scheduled_process do
