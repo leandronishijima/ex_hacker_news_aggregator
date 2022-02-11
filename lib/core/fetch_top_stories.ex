@@ -1,8 +1,14 @@
 defmodule HackerNewsAggregator.Core.FetchTopStories do
   use GenServer
 
+  alias HackerNewsAggregator.{
+    Core.Database,
+    HackerNewsClient.ApiClient
+  }
+
   # @five_minutes_in_ms 300_000
-  @five_minutes_in_ms 5_000
+  # 2 seconds
+  @five_minutes_in_ms 2_000
 
   def child_spec(init_arg) do
     %{
@@ -24,14 +30,10 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
 
   @impl true
   def handle_info(:fetch, state) do
-    time =
-      DateTime.utc_now()
-      |> DateTime.to_time()
-      |> Time.to_iso8601()
-
-    IO.puts("The time is now: #{time}")
-
     scheduled_process()
+
+    {:ok, top_stories} = ApiClient.top_stories()
+    GenServer.cast(Database, {:push, top_stories})
 
     {:noreply, state}
   end
