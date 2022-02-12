@@ -1,11 +1,14 @@
 defmodule HackerNewsAggregator.Core.Registry do
   use Agent
 
+  @name __MODULE__
+
   @doc """
   Starts a new registry.
   """
-  def start_link(name: name) do
-    Agent.start_link(fn -> %{} end, name: name)
+  def start_link(opts \\ []) do
+    opts = Keyword.put_new(opts, :name, @name)
+    Agent.start_link(fn -> %{} end, opts)
   end
 
   @doc """

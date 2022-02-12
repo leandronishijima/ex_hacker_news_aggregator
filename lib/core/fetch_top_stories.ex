@@ -37,8 +37,7 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
 
   defp push_top_stories do
     {:ok, top_stories} = ApiClient.top_stories()
-    # GenServer.cast(Registry, {:push, top_stories})
-    Registry.put(:registry, "top_stories", top_stories)
+    Registry.put(Registry, "top_stories", top_stories)
   end
 
   defp scheduled_process do
