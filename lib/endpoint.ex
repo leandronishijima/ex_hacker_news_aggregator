@@ -2,7 +2,7 @@ defmodule HackerNewsAggregator.Endpoint do
   use Plug.Router
 
   alias HackerNewsAggregator.{
-    Core.Database,
+    Core.Registry,
     HackerNewsClient.ApiClient
   }
 
@@ -13,7 +13,7 @@ defmodule HackerNewsAggregator.Endpoint do
   plug(:dispatch)
 
   get "/top_stories" do
-    top_stories = GenServer.call(Database, :get_top_stories)
+    top_stories = Registry.get(:registry, "top_stories")
 
     {:ok, response_json} = Jason.encode(%{"top_stories" => top_stories})
 
