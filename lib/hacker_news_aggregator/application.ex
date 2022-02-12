@@ -10,7 +10,7 @@ defmodule HackerNewsAggregator.Application do
     children = [
       # Starts a worker by calling: HackerNewsAggregator.Worker.start_link(arg)
       # {HackerNewsAggregator.Worker, arg}
-      HackerNewsAggregator.Core.Registry.child_spec(args),
+      HackerNewsAggregator.Core.Registry.child_spec(name: :registry),
       HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args),
       HackerNewsAggregator.Core.FetchTopStories.child_spec(args),
       Plug.Cowboy.child_spec(

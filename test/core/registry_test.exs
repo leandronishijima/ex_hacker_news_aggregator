@@ -4,7 +4,7 @@ defmodule HackerNewsAggregator.Core.RegistryTest do
   alias HackerNewsAggregator.Core.Registry
 
   setup do
-    {:ok, registry} = Registry.start_link([])
+    {:ok, registry} = Registry.start_link(name: :registry_test)
     %{registry: registry}
   end
 

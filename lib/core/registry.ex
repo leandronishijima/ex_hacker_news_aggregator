@@ -4,8 +4,8 @@ defmodule HackerNewsAggregator.Core.Registry do
   @doc """
   Starts a new registry.
   """
-  def start_link(_opts) do
-    Agent.start_link(fn -> %{} end, name: :registry)
+  def start_link(name: name) do
+    Agent.start_link(fn -> %{} end, name: name)
   end
 
   @doc """
