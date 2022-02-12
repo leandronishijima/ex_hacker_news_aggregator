@@ -12,7 +12,7 @@ defmodule HackerNewsAggregator.Application do
       # {HackerNewsAggregator.Worker, arg}
       HackerNewsAggregator.Core.Registry.child_spec(args),
       HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args),
-      HackerNewsAggregator.Core.FetchTopStories.child_spec(args),
+      HackerNewsAggregator.Task.FetchTopStories.child_spec(args),
       Plug.Cowboy.child_spec(
         scheme: :http,
         plug: HackerNewsAggregator.Endpoint,

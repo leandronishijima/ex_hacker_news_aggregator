@@ -1,4 +1,4 @@
-defmodule HackerNewsAggregator.Core.FetchTopStories do
+defmodule HackerNewsAggregator.Task.FetchTopStories do
   use GenServer
 
   alias HackerNewsAggregator.{
