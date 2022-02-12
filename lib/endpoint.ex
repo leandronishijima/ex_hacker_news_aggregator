@@ -13,7 +13,7 @@ defmodule HackerNewsAggregator.Endpoint do
   plug(:dispatch)
 
   get "/top_stories" do
-    top_stories = Registry.get(:registry, "top_stories")
+    top_stories = Registry.get(Registry, "top_stories")
 
     {:ok, response_json} = Jason.encode(%{"top_stories" => top_stories})
 
