@@ -22,7 +22,7 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
   @impl true
   def init(state) do
     push_top_stories()
-    scheduled_process()
+    :timer.send_interval(@five_minutes_in_ms, :fetch)
 
     {:ok, state}
   end
@@ -30,7 +30,6 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
   @impl true
   def handle_info(:fetch, state) do
     push_top_stories()
-    scheduled_process()
 
     {:noreply, state}
   end
@@ -38,9 +37,5 @@ defmodule HackerNewsAggregator.Core.FetchTopStories do
   defp push_top_stories do
     {:ok, top_stories} = ApiClient.top_stories()
     Registry.put(Registry, "top_stories", top_stories)
-  end
-
-  defp scheduled_process do
-    Process.send_after(self(), :fetch, @five_minutes_in_ms)
   end
 end
