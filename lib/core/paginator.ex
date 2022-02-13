@@ -3,7 +3,7 @@ defmodule HackerNewsAggregator.Core.Paginator do
 
   @name __MODULE__
 
-  defstruct list: [], page: nil, total_pages: nil
+  defstruct list: [], page: 0, total_pages: 0
 
   def child_spec(init_arg) do
     %{
@@ -28,7 +28,7 @@ defmodule HackerNewsAggregator.Core.Paginator do
 
   @impl true
   def handle_call({:paginate, [], page}, _from, state) do
-    {:reply, %__MODULE__{page: page, total_pages: 0}, state}
+    {:reply, %__MODULE__{page: page}, state}
   end
 
   @impl true
