@@ -3,6 +3,7 @@ defmodule HackerNewsAggregator.Endpoint do
 
   alias HackerNewsAggregator.{
     Core.Registry,
+    Core.Paginator,
     HackerNewsClient.ApiClient
   }
 
@@ -13,13 +14,24 @@ defmodule HackerNewsAggregator.Endpoint do
   plug(:dispatch)
 
   get "/top_stories" do
-    top_stories = Registry.get(Registry, "top_stories")
+    {paginated_top_stories, page} =
+      Registry.get(Registry, "top_stories")
+      |> paginate(conn.params)
 
-    {:ok, response_json} = Jason.encode(%{"top_stories" => top_stories})
+    {:ok, response_json} =
+      Jason.encode(%{
+        "top_stories" => paginated_top_stories,
+        "page" => page
+      })
 
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(200, response_json)
+  end
+
+  defp paginate(list, %{"page" => page_param}) do
+    {page, _} = Integer.parse(page_param)
+    {Paginator.paginate(Paginator, list, page), page}
   end
 
   get "/item/:id" do

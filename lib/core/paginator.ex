@@ -31,10 +31,10 @@ defmodule HackerNewsAggregator.Core.Paginator do
 
   @impl true
   def handle_call({:paginate, list, page}, _from, state) do
-    list =
+    reply =
       Enum.chunk_every(list, 10)
       |> Enum.at(page - 1)
 
-    {:reply, list, state}
+    {:reply, reply, state}
   end
 end
