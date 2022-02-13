@@ -5,7 +5,6 @@ defmodule HackerNewsAggregator.Core.PaginatorTest do
 
   setup do
     {:ok, paginator} = Paginator.start_link(name: __MODULE__)
-
     %{paginator: paginator}
   end
 
