@@ -16,7 +16,7 @@ defmodule HackerNewsAggregator.Core.Paginator do
   end
 
   def paginate(paginator, list, page) do
-    GenServer.cast(paginator, {:paginate, list, page})
+    GenServer.call(paginator, {:paginate, list, page})
   end
 
   @impl true
@@ -25,6 +25,16 @@ defmodule HackerNewsAggregator.Core.Paginator do
   end
 
   @impl true
-  def handle_cast({:paginate, list, page}, state) do
+  def handle_call({:paginate, [], _page}, _from, state) do
+    {:reply, [], state}
+  end
+
+  @impl true
+  def handle_call({:paginate, list, page}, _from, state) do
+    list =
+      Enum.chunk_every(list, 10)
+      |> Enum.at(page - 1)
+
+    {:reply, list, state}
   end
 end
