@@ -14,14 +14,15 @@ defmodule HackerNewsAggregator.Endpoint do
   plug(:dispatch)
 
   get "/top_stories" do
-    {paginated_top_stories, page} =
+    %Paginator{list: paginated_top_stories, page: page, total_pages: total_pages} =
       Registry.get(Registry, "top_stories")
       |> paginate(conn.params)
 
     {:ok, response_json} =
       Jason.encode(%{
         "top_stories" => paginated_top_stories,
-        "page" => page
+        "page" => page,
+        "total_pages" => total_pages
       })
 
     conn
@@ -31,7 +32,7 @@ defmodule HackerNewsAggregator.Endpoint do
 
   defp paginate(list, %{"page" => page_param}) do
     {page, _} = Integer.parse(page_param)
-    {Paginator.paginate(Paginator, list, page), page}
+    Paginator.paginate(Paginator, list, page)
   end
 
   get "/item/:id" do

@@ -3,6 +3,8 @@ defmodule HackerNewsAggregator.Core.Paginator do
 
   @name __MODULE__
 
+  defstruct list: [], page: nil, total_pages: nil
+
   def child_spec(init_arg) do
     %{
       id: __MODULE__,
@@ -25,16 +27,21 @@ defmodule HackerNewsAggregator.Core.Paginator do
   end
 
   @impl true
-  def handle_call({:paginate, [], _page}, _from, state) do
-    {:reply, [], state}
+  def handle_call({:paginate, [], page}, _from, state) do
+    {:reply, %__MODULE__{page: page, total_pages: 0}, state}
   end
 
   @impl true
   def handle_call({:paginate, list, page}, _from, state) do
-    reply =
-      Enum.chunk_every(list, 10)
-      |> Enum.at(page - 1)
+    chuncked_list = Enum.chunk_every(list, 10)
 
-    {:reply, reply, state}
+    paginated_list = Enum.at(chuncked_list, page - 1)
+
+    {:reply,
+     %__MODULE__{
+       list: paginated_list,
+       page: page,
+       total_pages: length(chuncked_list)
+     }, state}
   end
 end
