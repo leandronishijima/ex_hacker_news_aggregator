@@ -26,6 +26,13 @@ defmodule HackerNewsAggregator.ApiTest do
                Api.get_paginate_top_stories(api, %{"page" => "1"})
     end
 
+    test "when page is invalid", %{api: api, registry: registry} do
+      Registry.put(registry, "top_stories", 1..10)
+
+      assert "{\"page\":2,\"top_stories\":[],\"total_pages\":1}" ==
+               Api.get_paginate_top_stories(api, %{"page" => "2"})
+    end
+
     test "when registry have more than ten stories", %{api: api, registry: registry} do
       Registry.put(registry, "top_stories", 1..50)
 

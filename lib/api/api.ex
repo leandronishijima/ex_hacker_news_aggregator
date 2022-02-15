@@ -44,16 +44,11 @@ defmodule HackerNewsAggregator.Api do
         _from,
         %{registry: registry, paginator: paginator} = state
       ) do
-    %Paginator{list: paginated_top_stories, page: page, total_pages: total_pages} =
-      Registry.get(registry, "top_stories")
+    response_json =
+      registry
+      |> Registry.get("top_stories")
       |> paginate(paginator, params)
-
-    {:ok, response_json} =
-      Jason.encode(%{
-        "top_stories" => paginated_top_stories,
-        "page" => page,
-        "total_pages" => total_pages
-      })
+      |> to_json()
 
     {:reply, response_json, state}
   end
@@ -67,15 +62,46 @@ defmodule HackerNewsAggregator.Api do
     {:reply, response_json, state}
   end
 
+  defp to_json(%Paginator{valid?: false, page: page}) do
+    {:ok, response_json} =
+      Jason.encode(%{
+        "top_stories" => [],
+        "page" => page,
+        "total_pages" => 1
+      })
+
+    response_json
+  end
+
+  defp to_json(%Paginator{
+         valid?: true,
+         list: paginated_top_stories,
+         page: page,
+         total_pages: total_pages
+       }) do
+    {:ok, response_json} =
+      Jason.encode(%{
+        "top_stories" => paginated_top_stories,
+        "page" => page,
+        "total_pages" => total_pages
+      })
+
+    response_json
+  end
+
   defp to_json(struct), do: Jason.encode(struct)
 
   defp paginate(nil, paginator, %{"page" => page_param}) do
-    {page, _} = Integer.parse(page_param)
-    Paginator.paginate(paginator, [], page)
+    Paginator.paginate(paginator, [], to_integer(page_param))
   end
 
   defp paginate(list, paginator, %{"page" => page_param}) do
-    {page, _} = Integer.parse(page_param)
-    Paginator.paginate(paginator, list, page)
+    IO.inspect(list)
+    Paginator.paginate(paginator, list, to_integer(page_param))
+  end
+
+  defp to_integer(string_number) when is_binary(string_number) do
+    {integer, _} = Integer.parse(string_number)
+    integer
   end
 end

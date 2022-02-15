@@ -27,8 +27,18 @@ defmodule HackerNewsAggregator.Core.Paginator do
   end
 
   @impl true
+  def handle_call({:paginate, nil, page}, _from, state) do
+    {:reply, %__MODULE__{valid?: false, page: page}, state}
+  end
+
+  @impl true
   def handle_call({:paginate, [], page}, _from, state) when page > 1 do
     {:reply, %__MODULE__{valid?: false, page: page}, state}
+  end
+
+  @impl true
+  def handle_call({:paginate, [], page}, _from, state) do
+    {:reply, %__MODULE__{valid?: true, page: page}, state}
   end
 
   @impl true
@@ -37,12 +47,23 @@ defmodule HackerNewsAggregator.Core.Paginator do
 
     paginated_list = Enum.at(chuncked_list, page - 1)
 
-    {:reply,
-     %__MODULE__{
-       valid?: true,
-       list: paginated_list,
-       page: page,
-       total_pages: length(chuncked_list)
-     }, state}
+    if is_nil(paginated_list) do
+      {:reply,
+       %__MODULE__{
+         valid?: false,
+         list: [],
+         page: page,
+         total_pages: length(chuncked_list)
+       }, state}
+    else
+      {:reply,
+       %__MODULE__{
+         valid?: true,
+         list: paginated_list,
+         page: page,
+         total_pages: length(chuncked_list)
+       }, state}
+    end
+
   end
 end

@@ -9,14 +9,29 @@ defmodule HackerNewsAggregator.Core.PaginatorTest do
   end
 
   describe "paginate/3" do
-    test "when list is empty", %{paginator: paginator} do
+    test "when list is empty and page is invalid", %{paginator: paginator} do
       assert %Paginator{valid?: false, list: [], page: 2, total_pages: 0} ==
                Paginator.paginate(paginator, [], 2)
+    end
+
+    test "when list is empty and page = 1", %{paginator: paginator} do
+      assert %Paginator{valid?: true, list: [], page: 1, total_pages: 0} ==
+               Paginator.paginate(paginator, [], 1)
+    end
+
+    test "when list is nil", %{paginator: paginator} do
+      assert %Paginator{valid?: false, list: [], page: 1, total_pages: 0} ==
+               Paginator.paginate(paginator, nil, 1)
     end
 
     test "when list is not empty", %{paginator: paginator} do
       assert %Paginator{valid?: true, list: [1, 2, 3], page: 1, total_pages: 1} ==
                Paginator.paginate(paginator, 1..3, 1)
+    end
+
+    test "when list is not empty and page is invalid", %{paginator: paginator} do
+      assert %Paginator{valid?: false, list: [], page: 2, total_pages: 1} ==
+               Paginator.paginate(paginator, 1..3, 2)
     end
 
     test "when list has 20 lenght and page equal 1", %{paginator: paginator} do
