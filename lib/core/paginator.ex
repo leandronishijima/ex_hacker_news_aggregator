@@ -3,7 +3,7 @@ defmodule HackerNewsAggregator.Core.Paginator do
 
   @name __MODULE__
 
-  defstruct list: [], page: 0, total_pages: 0
+  defstruct list: [], page: 0, total_pages: 0, valid?: false
 
   def child_spec(init_arg) do
     %{
@@ -27,8 +27,8 @@ defmodule HackerNewsAggregator.Core.Paginator do
   end
 
   @impl true
-  def handle_call({:paginate, [], page}, _from, state) do
-    {:reply, %__MODULE__{page: page}, state}
+  def handle_call({:paginate, [], page}, _from, state) when page > 1 do
+    {:reply, %__MODULE__{valid?: false, page: page}, state}
   end
 
   @impl true
@@ -39,6 +39,7 @@ defmodule HackerNewsAggregator.Core.Paginator do
 
     {:reply,
      %__MODULE__{
+       valid?: true,
        list: paginated_list,
        page: page,
        total_pages: length(chuncked_list)
