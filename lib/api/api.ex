@@ -18,9 +18,9 @@ defmodule HackerNewsAggregator.Api do
     server_name = Access.get(opts, :name, __MODULE__)
 
     opts =
-      opts
-      |> Keyword.put_new(:registry, Registry)
-      |> Keyword.put_new(:paginator, Paginator)
+      Map.new()
+      |> Map.put_new(:registry, Access.get(opts, :registry, Registry))
+      |> Map.put_new(:paginator, Access.get(opts, :paginator, Paginator))
 
     GenServer.start_link(__MODULE__, {:ok, opts}, name: server_name)
   end
@@ -42,13 +42,11 @@ defmodule HackerNewsAggregator.Api do
   def handle_call(
         {:paginate_top_stories, params},
         _from,
-        [paginator: paginator, registry: registry] = state
+        %{registry: registry, paginator: paginator} = state
       ) do
     %Paginator{list: paginated_top_stories, page: page, total_pages: total_pages} =
       Registry.get(registry, "top_stories")
       |> paginate(paginator, params)
-
-    IO.inspect("passou pelo paginator |> registry")
 
     {:ok, response_json} =
       Jason.encode(%{
@@ -70,6 +68,11 @@ defmodule HackerNewsAggregator.Api do
   end
 
   defp to_json(struct), do: Jason.encode(struct)
+
+  defp paginate(nil, paginator, %{"page" => page_param}) do
+    {page, _} = Integer.parse(page_param)
+    Paginator.paginate(paginator, [], page)
+  end
 
   defp paginate(list, paginator, %{"page" => page_param}) do
     {page, _} = Integer.parse(page_param)
