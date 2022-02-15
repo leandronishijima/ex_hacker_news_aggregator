@@ -14,28 +14,41 @@ defmodule HackerNewsAggregator.Api do
     }
   end
 
-  def start_link(state) do
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  def start_link(opts \\ []) do
+    server_name = Access.get(opts, :name, __MODULE__)
+
+    opts =
+      opts
+      |> Keyword.put_new(:registry, Registry)
+      |> Keyword.put_new(:paginator, Paginator)
+
+    GenServer.start_link(__MODULE__, {:ok, opts}, name: server_name)
   end
 
-  def get_paginate_top_stories(api, params) do
+  @impl true
+  def init({:ok, opts}) do
+    {:ok, opts}
+  end
+
+  def get_paginate_top_stories(api \\ __MODULE__, params) do
     GenServer.call(api, {:paginate_top_stories, params})
   end
 
-  def get_item(api, item_id) do
+  def get_item(api \\ __MODULE__, item_id) do
     GenServer.call(api, {:item, item_id})
   end
 
   @impl true
-  def init(state) do
-    {:ok, state}
-  end
-
-  @impl true
-  def handle_call({:paginate_top_stories, params}, _from, state) do
+  def handle_call(
+        {:paginate_top_stories, params},
+        _from,
+        [paginator: paginator, registry: registry] = state
+      ) do
     %Paginator{list: paginated_top_stories, page: page, total_pages: total_pages} =
-      Registry.get(Registry, "top_stories")
-      |> paginate(params)
+      Registry.get(registry, "top_stories")
+      |> paginate(paginator, params)
+
+    IO.inspect("passou pelo paginator |> registry")
 
     {:ok, response_json} =
       Jason.encode(%{
@@ -56,12 +69,10 @@ defmodule HackerNewsAggregator.Api do
     {:reply, response_json, state}
   end
 
-  defp to_json(struct) do
-    Jason.encode(struct)
-  end
+  defp to_json(struct), do: Jason.encode(struct)
 
-  defp paginate(list, %{"page" => page_param}) do
+  defp paginate(list, paginator, %{"page" => page_param}) do
     {page, _} = Integer.parse(page_param)
-    Paginator.paginate(Paginator, list, page)
+    Paginator.paginate(paginator, list, page)
   end
 end
