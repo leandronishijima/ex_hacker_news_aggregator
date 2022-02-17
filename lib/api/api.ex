@@ -96,8 +96,12 @@ defmodule HackerNewsAggregator.Api do
   end
 
   defp paginate(list, paginator, %{"page" => page_param}) do
-    IO.inspect(list)
     Paginator.paginate(paginator, list, to_integer(page_param))
+  end
+
+  defp paginate(list, paginator, page_param) do
+    page_number = String.replace(page_param, "page=", "")
+    Paginator.paginate(paginator, list, to_integer(page_number))
   end
 
   defp to_integer(string_number) when is_binary(string_number) do

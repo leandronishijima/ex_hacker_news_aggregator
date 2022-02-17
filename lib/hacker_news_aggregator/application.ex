@@ -34,7 +34,7 @@ defmodule HackerNewsAggregator.Application do
   defp dispatch do
     [
       {:_, [
-          {"/ws", HackerNewsAggregator.SocketHandler, []},
+          {"/ws/top_stories", HackerNewsAggregator.Socket.FetchTopStoriesHandler, []},
           {:_, Plug.Cowboy.Handler, {HackerNewsAggregator.Endpoint, []}}
         ]
       }
