@@ -35,7 +35,6 @@ defmodule HackerNewsAggregator.Application do
     [
       {:_, [
           {"/ws/top_stories", HackerNewsAggregator.Socket.FetchTopStoriesHandler, []},
-          {"/ws/item/:id", HackerNewsAggregator.Socket.ItemHandler, []},
           {:_, Plug.Cowboy.Handler, {HackerNewsAggregator.Endpoint, []}}
         ]
       }
