@@ -8,8 +8,11 @@ defmodule HackerNewsAggregator.Application do
   @impl true
   def start(_type, args) do
     children = [
-      # Starts a worker by calling: HackerNewsAggregator.Worker.start_link(arg)
-      # {HackerNewsAggregator.Worker, arg}
+      Registry.child_spec(args ++ [
+        name: Registry, 
+        keys: :unique, 
+        partitions: System.schedulers_online()
+      ]),
       HackerNewsAggregator.Core.Registry.child_spec(args),
       HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args),
       HackerNewsAggregator.Task.FetchTopStories.child_spec(args),

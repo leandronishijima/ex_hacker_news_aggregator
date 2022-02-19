@@ -1,12 +1,11 @@
 defmodule HackerNewsAggregator.Task.FetchTopStories do
   use GenServer
 
-  alias HackerNewsAggregator.{
-    Core.Registry,
-    HackerNewsClient.ApiClient
-  }
+  alias HackerNewsAggregator.Core.Registry, as: CoreRegistry
+  alias HackerNewsAggregator.HackerNewsClient.ApiClient
 
-  @five_minutes_in_ms 300_000
+  # @five_minutes_in_ms 300_000
+  @five_minutes_in_ms 3_000
 
   def child_spec(init_arg) do
     %{
@@ -36,6 +35,10 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
 
   defp push_top_stories do
     {:ok, top_stories} = ApiClient.top_stories()
-    Registry.put(Registry, "top_stories", top_stories)
+    CoreRegistry.put(CoreRegistry, "top_stories", top_stories)
+
+    Registry.dispatch(Registry, "connected_websockets", fn entries ->
+      for {pid, _} <- entries, do: send(pid, {:broadcast, top_stories})
+    end)
   end
 end
