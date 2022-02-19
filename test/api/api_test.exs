@@ -21,13 +21,6 @@ defmodule HackerNewsAggregator.ApiTest do
                Api.get_paginate_top_stories(api, %{"page" => "1"})
     end
 
-    test "when registry have stories and query param is a string", %{api: api, registry: registry} do
-      Registry.put(registry, "top_stories", 1..10)
-
-      assert "{\"page\":1,\"top_stories\":[1,2,3,4,5,6,7,8,9,10],\"total_pages\":1}" ==
-               Api.get_paginate_top_stories(api, "page=1")
-    end
-
     test "when registry doesn`t have stories", %{api: api} do
       assert "{\"page\":1,\"top_stories\":[],\"total_pages\":0}" ==
                Api.get_paginate_top_stories(api, %{"page" => "1"})

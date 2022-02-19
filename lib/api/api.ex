@@ -34,6 +34,10 @@ defmodule HackerNewsAggregator.Api do
     GenServer.call(api, {:paginate_top_stories, params})
   end
 
+  def get_top_stories(api \\ __MODULE__) do
+    GenServer.call(api, :top_stories)
+  end
+
   def get_item(api \\ __MODULE__, item_id) do
     GenServer.call(api, {:item, item_id})
   end
@@ -51,6 +55,20 @@ defmodule HackerNewsAggregator.Api do
       |> to_json()
 
     {:reply, response_json, state}
+  end
+
+  @impl true
+  def handle_call(
+        :top_stories,
+        _from,
+        %{registry: registry} = state
+      ) do
+    top_stories =
+      registry
+      |> Registry.get("top_stories")
+      |> to_json()
+
+    {:reply, top_stories, state}
   end
 
   @impl true
@@ -89,6 +107,12 @@ defmodule HackerNewsAggregator.Api do
     response_json
   end
 
+  defp to_json(list) when is_list(list) do
+    {:ok, response_json} = Jason.encode(list)
+
+    response_json
+  end
+
   defp to_json(struct), do: Jason.encode(struct)
 
   defp paginate(nil, paginator, %{"page" => page_param}) do
@@ -97,11 +121,6 @@ defmodule HackerNewsAggregator.Api do
 
   defp paginate(list, paginator, %{"page" => page_param}) do
     Paginator.paginate(paginator, list, to_integer(page_param))
-  end
-
-  defp paginate(list, paginator, page_param) do
-    page_number = String.replace(page_param, "page=", "")
-    Paginator.paginate(paginator, list, to_integer(page_number))
   end
 
   defp to_integer(string_number) when is_binary(string_number) do

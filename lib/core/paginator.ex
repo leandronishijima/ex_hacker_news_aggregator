@@ -64,6 +64,5 @@ defmodule HackerNewsAggregator.Core.Paginator do
          total_pages: length(chuncked_list)
        }, state}
     end
-
   end
 end
