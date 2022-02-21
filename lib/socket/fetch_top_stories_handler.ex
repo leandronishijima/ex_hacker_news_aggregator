@@ -16,15 +16,13 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
   end
 
   def websocket_handle({:text, _message}, state) do
-    # TODO verify if pid is already registred
-    {:ok, _pid} = Registry.register(Registry, "connected_websockets", self())
+    Registry.register(Registry, "connected_websockets", self())
 
     top_stories = Api.get_top_stories(Api)
 
     {:reply, {:text, top_stories}, state}
   end
 
-  # broadcast handle here
   def websocket_info({:broadcast, raw_top_stories}, state) do
     top_stories = Jason.encode!(raw_top_stories)
     {:reply, {:text, top_stories}, state}
