@@ -2,6 +2,7 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
   @behaviour :cowboy_websocket
 
   alias HackerNewsAggregator.Api
+  alias HackerNewsAggregator.Core.PubSub
 
   def init(_, _req, _opts) do
     {:upgrade, :protocol, :cowboy_websocket}
@@ -16,7 +17,7 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
   end
 
   def websocket_handle({:text, _message}, state) do
-    Registry.register(Registry, "connected_websockets", self())
+    PubSub.subscribe_websocket(self())
 
     top_stories = Api.get_top_stories(Api)
 

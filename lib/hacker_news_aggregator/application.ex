@@ -8,12 +8,16 @@ defmodule HackerNewsAggregator.Application do
   @impl true
   def start(_type, args) do
     children = [
-      Registry.child_spec(args ++ [
-        name: Registry, 
-        keys: :unique, 
-        partitions: System.schedulers_online()
-      ]),
+      Registry.child_spec(
+        args ++
+          [
+            name: Registry,
+            keys: :unique,
+            partitions: System.schedulers_online()
+          ]
+      ),
       HackerNewsAggregator.Core.Registry.child_spec(args),
+      HackerNewsAggregator.Core.PubSub.child_spec(registry: Registry),
       HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args),
       HackerNewsAggregator.Task.FetchTopStories.child_spec(args),
       HackerNewsAggregator.Core.Paginator.child_spec(args),
@@ -36,11 +40,11 @@ defmodule HackerNewsAggregator.Application do
 
   defp dispatch do
     [
-      {:_, [
-          {"/ws/top_stories", HackerNewsAggregator.Socket.FetchTopStoriesHandler, []},
-          {:_, Plug.Cowboy.Handler, {HackerNewsAggregator.Endpoint, []}}
-        ]
-      }
+      {:_,
+       [
+         {"/ws/top_stories", HackerNewsAggregator.Socket.FetchTopStoriesHandler, []},
+         {:_, Plug.Cowboy.Handler, {HackerNewsAggregator.Endpoint, []}}
+       ]}
     ]
   end
 end

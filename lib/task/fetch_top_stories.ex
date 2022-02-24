@@ -3,6 +3,7 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
 
   alias HackerNewsAggregator.Core.Registry, as: CoreRegistry
   alias HackerNewsAggregator.HackerNewsClient.ApiClient
+  alias HackerNewsAggregator.Core.PubSub
 
   # @five_minutes_in_ms 300_000
   @five_minutes_in_ms 3_000
@@ -37,8 +38,6 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
     {:ok, top_stories} = ApiClient.top_stories()
     CoreRegistry.put(CoreRegistry, "top_stories", top_stories)
 
-    Registry.dispatch(Registry, "connected_websockets", fn entries ->
-      for {pid, _} <- entries, do: send(pid, {:broadcast, top_stories})
-    end)
+    PubSub.broadcast(top_stories)
   end
 end
