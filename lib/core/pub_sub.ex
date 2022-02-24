@@ -12,7 +12,7 @@ defmodule HackerNewsAggregator.Core.PubSub do
 
   def start_link(opts \\ []) do
     server_name = Access.get(opts, :name, __MODULE__)
-    registry_name = Access.get(opts, :registry, __MODULE__)
+    registry_name = Access.get(opts, :registry, Registry)
 
     state =
       Map.new()

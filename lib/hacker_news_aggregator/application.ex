@@ -17,7 +17,7 @@ defmodule HackerNewsAggregator.Application do
           ]
       ),
       HackerNewsAggregator.Core.Registry.child_spec(args),
-      HackerNewsAggregator.Core.PubSub.child_spec(registry: Registry),
+      HackerNewsAggregator.Core.PubSub.child_spec(args),
       HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args),
       HackerNewsAggregator.Task.FetchTopStories.child_spec(args),
       HackerNewsAggregator.Core.Paginator.child_spec(args),
