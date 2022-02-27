@@ -8,28 +8,17 @@ defmodule HackerNewsAggregator.Application do
   @impl true
   def start(_type, args) do
     children = [
-      Registry.child_spec(
-        args ++
-          [
-            name: Registry,
-            keys: :unique,
-            partitions: System.schedulers_online()
-          ]
-      ),
-      HackerNewsAggregator.Core.Registry.child_spec(args),
-      HackerNewsAggregator.Core.PubSub.child_spec(args),
-      HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(args),
-      HackerNewsAggregator.Task.FetchTopStories.child_spec(args),
-      HackerNewsAggregator.Core.Paginator.child_spec(args),
-      HackerNewsAggregator.Api.child_spec(args),
-      Plug.Cowboy.child_spec(
-        scheme: :http,
-        plug: HackerNewsAggregator.Endpoint,
-        options: [
-          dispatch: dispatch(),
-          port: 4001
-        ]
-      )
+      HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(),
+      {Registry, name: Registry, keys: :unique, partitions: System.schedulers()},
+      {HackerNewsAggregator.Core.Registry, args},
+      {HackerNewsAggregator.Core.PubSub, args},
+      {HackerNewsAggregator.Task.FetchTopStories, args},
+      {HackerNewsAggregator.Core.Paginator, args},
+      {HackerNewsAggregator.Api, args},
+      {Plug.Cowboy,
+       scheme: :http,
+       plug: HackerNewsAggregator.Endpoint,
+       options: [dispatch: dispatch(), port: 4001]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -4,9 +4,7 @@ defmodule HackerNewsAggregator.HackerNewsClient.ApiClient do
   @base_url "https://hacker-news.firebaseio.com/v0"
   @params_to_limit_stories_by_50 "print=pretty&limitToFirst=50&orderBy=%22$key%22"
 
-  def child_spec(_) do
-    {Finch, name: __MODULE__}
-  end
+  def child_spec, do: {Finch, name: __MODULE__}
 
   def top_stories,
     do: get("#{@base_url}/topstories.json?#{@params_to_limit_stories_by_50}")
