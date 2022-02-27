@@ -1,4 +1,4 @@
-defmodule HackerNewsAggregator.Core.Registry do
+defmodule HackerNewsAggregator.Core.StoryStorage do
   use Agent
 
   @name __MODULE__
@@ -14,14 +14,14 @@ defmodule HackerNewsAggregator.Core.Registry do
   @doc """
   Gets a value from the `registry` by `key`.
   """
-  def get(registry, key) do
-    Agent.get(registry, &Map.get(&1, key))
+  def get(story_storage, key) do
+    Agent.get(story_storage, &Map.get(&1, key))
   end
 
   @doc """
   Puts the `value` for the given `key` in the `registry`.
   """
-  def put(registry, key, value) do
-    Agent.update(registry, &Map.put(&1, key, value))
+  def put(story_storage, key, value) do
+    Agent.update(story_storage, &Map.put(&1, key, value))
   end
 end

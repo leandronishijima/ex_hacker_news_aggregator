@@ -2,7 +2,7 @@ defmodule HackerNewsAggregator.Api do
   use GenServer
 
   alias HackerNewsAggregator.{
-    Core.Registry,
+    Core.StoryStorage,
     Core.Paginator,
     HackerNewsClient.ApiClient
   }
@@ -19,7 +19,7 @@ defmodule HackerNewsAggregator.Api do
 
     opts =
       Map.new()
-      |> Map.put_new(:registry, Access.get(opts, :registry, Registry))
+      |> Map.put_new(:storage, Access.get(opts, :storage, StoryStorage))
       |> Map.put_new(:paginator, Access.get(opts, :paginator, Paginator))
 
     GenServer.start_link(__MODULE__, {:ok, opts}, name: server_name)
@@ -46,11 +46,11 @@ defmodule HackerNewsAggregator.Api do
   def handle_call(
         {:paginate_top_stories, params},
         _from,
-        %{registry: registry, paginator: paginator} = state
+        %{storage: storage, paginator: paginator} = state
       ) do
     response_json =
-      registry
-      |> Registry.get("top_stories")
+      storage
+      |> StoryStorage.get("top_stories")
       |> paginate(paginator, params)
       |> to_json()
 
@@ -61,11 +61,11 @@ defmodule HackerNewsAggregator.Api do
   def handle_call(
         :top_stories,
         _from,
-        %{registry: registry} = state
+        %{storage: storage} = state
       ) do
     top_stories =
-      registry
-      |> Registry.get("top_stories")
+      storage
+      |> StoryStorage.get("top_stories")
       |> to_json()
 
     {:reply, top_stories, state}
