@@ -50,7 +50,7 @@ defmodule HackerNewsAggregator.Api do
       ) do
     response_json =
       storage
-      |> StoryStorage.get("top_stories")
+      |> StoryStorage.get_top_stories()
       |> paginate(paginator, params)
       |> to_json()
 
@@ -65,7 +65,7 @@ defmodule HackerNewsAggregator.Api do
       ) do
     top_stories =
       storage
-      |> StoryStorage.get("top_stories")
+      |> StoryStorage.get_top_stories()
       |> to_json()
 
     {:reply, top_stories, state}

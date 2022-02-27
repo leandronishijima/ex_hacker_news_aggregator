@@ -10,29 +10,36 @@ defmodule HackerNewsAggregator.Core.StoryStorageTest do
     %{registry: registry}
   end
 
-  describe "put/3" do
+  describe "put_top_stories/2" do
     test "when you put an array of numbers" do
-      assert StoryStorage.get(@server_name, "top_stories") == nil
+      assert StoryStorage.get_top_stories(@server_name) == nil
 
       assert :ok =
-               StoryStorage.put(@server_name, "top_stories", [
+               StoryStorage.put_top_stories(@server_name, [
                  30_237_457,
                  30_237_846,
                  30_233_630,
                  30_233_472
                ])
+
+      assert StoryStorage.get_top_stories(@server_name) == [
+               30_237_457,
+               30_237_846,
+               30_233_630,
+               30_233_472
+             ]
     end
   end
 
-  describe "get/2" do
+  describe "get_top_stories/1" do
     test "when not have any value registred" do
-      assert is_nil(StoryStorage.get(@server_name, "top_stories"))
+      assert is_nil(StoryStorage.get_top_stories(@server_name))
     end
 
     test "when have a value registred" do
-      StoryStorage.put(@server_name, "top_stories", [30_237_457])
+      StoryStorage.put_top_stories(@server_name, [30_237_457])
 
-      assert [30_237_457] == StoryStorage.get(@server_name, "top_stories")
+      assert [30_237_457] == StoryStorage.get_top_stories(@server_name)
     end
   end
 end

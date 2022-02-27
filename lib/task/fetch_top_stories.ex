@@ -36,7 +36,7 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
 
   defp push_top_stories do
     {:ok, top_stories} = ApiClient.top_stories()
-    StoryStorage.put(StoryStorage, "top_stories", top_stories)
+    StoryStorage.put_top_stories(StoryStorage, top_stories)
 
     PubSub.broadcast(top_stories)
   end
