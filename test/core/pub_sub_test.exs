@@ -41,14 +41,14 @@ defmodule HackerNewsAggregator.Core.PubSubTest do
     test "when you broadcast with empty subscribes", %{pubsub: pubsub} do
       PubSub.broadcast(pubsub, [30_237_457, 30_190_717, 30_237_483])
 
-      refute_receive {:broadcast, [30_237_457, 30_190_717, 30_237_483]}
+      refute_received {:broadcast, [30_237_457, 30_190_717, 30_237_483]}
     end
 
     test "when you broadcast with subscribes", %{pubsub: pubsub, registry: registry} do
       PubSub.broadcast(pubsub, [30_237_457, 30_190_717, 30_237_483])
       Registry.register(registry, "connected_websockets", self())
 
-      assert_received {:broadcast, [30_237_457, 30_190_717, 30_237_483]}
+      assert_receive {:broadcast, [30_237_457, 30_190_717, 30_237_483]}
     end
   end
 end
