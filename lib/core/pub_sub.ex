@@ -32,7 +32,7 @@ defmodule HackerNewsAggregator.Core.PubSub do
   end
 
   def subscribe_websocket(pubsub \\ __MODULE__, pid) do
-    GenServer.cast(pubsub, {:subscribe_websocket, pid})
+    GenServer.call(pubsub, {:subscribe_websocket, pid})
   end
 
   @impl true
@@ -47,10 +47,10 @@ defmodule HackerNewsAggregator.Core.PubSub do
   end
 
   @impl true
-  def handle_cast({:subscribe_websocket, pid}, %{registry: registry} = state) do
-    Registry.register(registry, @registry_key_websockets, pid)
+  def handle_call({:subscribe_websocket, pid}, _from, %{registry: registry} = state) do
+    {:ok, _pid} = Registry.register(registry, @registry_key_websockets, pid)
 
-    {:noreply, state}
+    {:reply, :ok, state}
   end
 
   @impl true
