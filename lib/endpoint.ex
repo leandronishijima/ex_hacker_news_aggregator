@@ -1,7 +1,7 @@
 defmodule HackerNewsAggregator.Endpoint do
   use Plug.Router
 
-  alias HackerNewsAggregator.Api
+  alias HackerNewsAggregator.Controller.TopStoriesController
 
   plug(Plug.Logger)
   plug(:match)
@@ -10,19 +10,11 @@ defmodule HackerNewsAggregator.Endpoint do
   plug(:dispatch)
 
   get "/top_stories" do
-    response_json = Api.get_paginate_top_stories(Api, conn.params)
-
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, response_json)
+    TopStoriesController.get_top_stories(conn)
   end
 
   get "/item/:id" do
-    response_json = Api.get_item(Api, id)
-
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, response_json)
+    TopStoriesController.get_item(conn, id)
   end
 
   match _ do
