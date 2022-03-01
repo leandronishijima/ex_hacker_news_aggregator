@@ -19,6 +19,22 @@ defmodule HackerNewsAggregator.Core.PubSubTest do
       assert [{pubsub, self()}] ==
                Registry.lookup(registry, "connected_websockets")
     end
+
+    test "when you try to subscribe an process with the same pid two times, but only one is resgisted",
+         %{
+           pubsub: pubsub,
+           registry: registry
+         } do
+      pid = self()
+
+      assert {:ok, pid} == PubSub.subscribe_websocket(pubsub, pid)
+
+      assert {:warn, "process already registered", pid} ==
+               PubSub.subscribe_websocket(pubsub, pid)
+
+      assert [{pubsub, pid}] ==
+               Registry.lookup(registry, "connected_websockets")
+    end
   end
 
   describe "broadcast/2" do

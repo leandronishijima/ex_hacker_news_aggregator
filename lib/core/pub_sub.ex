@@ -48,9 +48,13 @@ defmodule HackerNewsAggregator.Core.PubSub do
 
   @impl true
   def handle_call({:subscribe_websocket, pid}, _from, %{registry: registry} = state) do
-    {:ok, _pid} = Registry.register(registry, @registry_key_websockets, pid)
+    case Registry.register(registry, @registry_key_websockets, pid) do
+      {:ok, _pid} ->
+        {:reply, {:ok, pid}, state}
 
-    {:reply, :ok, state}
+      {:error, {:already_registered, _pid}} ->
+        {:reply, {:warn, "process already registered", pid}, state}
+    end
   end
 
   @impl true
