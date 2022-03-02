@@ -1,7 +1,7 @@
 defmodule HackerNewsAggregator.Endpoint do
   use Plug.Router
 
-  alias HackerNewsAggregator.Controller.TopStoriesController
+  alias HackerNewsAggregator.Controller.{TopStoriesController, ItemController}
 
   plug(Plug.Logger)
   plug(:match)
@@ -14,7 +14,7 @@ defmodule HackerNewsAggregator.Endpoint do
   end
 
   get "/item/:id" do
-    TopStoriesController.get_item(conn, id)
+    ItemController.get_item(conn, id)
   end
 
   match _ do
