@@ -14,7 +14,7 @@ defmodule HackerNewsAggregator.Application do
       {HackerNewsAggregator.Core.PubSub, args},
       {HackerNewsAggregator.Task.FetchTopStories, args},
       {HackerNewsAggregator.Core.Paginator, args},
-      {HackerNewsAggregator.Api, args},
+      {HackerNewsAggregator.Core, args},
       {Plug.Cowboy,
        scheme: :http,
        plug: HackerNewsAggregator.Endpoint,

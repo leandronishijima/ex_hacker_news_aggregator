@@ -1,4 +1,4 @@
-defmodule HackerNewsAggregator.Api do
+defmodule HackerNewsAggregator.Core do
   use GenServer
 
   alias HackerNewsAggregator.{
@@ -30,16 +30,16 @@ defmodule HackerNewsAggregator.Api do
     {:ok, opts}
   end
 
-  def get_paginate_top_stories(api \\ __MODULE__, params) do
-    GenServer.call(api, {:paginate_top_stories, params})
+  def get_paginate_top_stories(core \\ __MODULE__, params) do
+    GenServer.call(core, {:paginate_top_stories, params})
   end
 
-  def get_top_stories(api \\ __MODULE__) do
-    GenServer.call(api, :top_stories)
+  def get_top_stories(core \\ __MODULE__) do
+    GenServer.call(core, :top_stories)
   end
 
-  def get_item(api \\ __MODULE__, item_id) do
-    GenServer.call(api, {:item, item_id})
+  def get_item(core \\ __MODULE__, item_id) do
+    GenServer.call(core, {:item, item_id})
   end
 
   @impl true

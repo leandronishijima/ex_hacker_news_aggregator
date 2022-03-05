@@ -1,7 +1,7 @@
 defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
   @behaviour :cowboy_websocket
 
-  alias HackerNewsAggregator.Api
+  alias HackerNewsAggregator.Core
   alias HackerNewsAggregator.Core.PubSub
 
   def init(_, _req, _opts) do
@@ -9,7 +9,7 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
   end
 
   def init(req, state \\ []) do
-    api = Access.get(state, :api, Api)
+    api = Access.get(state, :core, Core)
     pubsub = Access.get(state, :pubsub, PubSub)
 
     state =
@@ -25,7 +25,7 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
   end
 
   def websocket_handle({:text, _message}, %{api: api, pubsub: pubsub} = state) do
-    top_stories = Api.get_top_stories(api)
+    top_stories = Core.get_top_stories(api)
 
     PubSub.subscribe_websocket(pubsub, self())
 

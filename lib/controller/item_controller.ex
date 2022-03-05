@@ -1,10 +1,10 @@
 defmodule HackerNewsAggregator.Controller.ItemController do
   import Plug.Conn
 
-  alias HackerNewsAggregator.Api
+  alias HackerNewsAggregator.Core
 
-  def get_item(conn, id, api \\ Api) do
-    response_json = Api.get_item(api, id)
+  def get_item(conn, id, api \\ Core) do
+    response_json = Core.get_item(api, id)
 
     conn
     |> put_resp_content_type("application/json")

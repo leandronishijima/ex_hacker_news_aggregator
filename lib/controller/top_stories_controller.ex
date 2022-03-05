@@ -1,10 +1,10 @@
 defmodule HackerNewsAggregator.Controller.TopStoriesController do
   import Plug.Conn
 
-  alias HackerNewsAggregator.Api
+  alias HackerNewsAggregator.Core
 
-  def get_top_stories(conn, api \\ Api) do
-    response_json = Api.get_paginate_top_stories(api, conn.params)
+  def get_top_stories(conn, api \\ Core) do
+    response_json = Core.get_paginate_top_stories(api, conn.params)
 
     conn
     |> put_resp_content_type("application/json")
