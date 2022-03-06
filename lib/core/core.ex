@@ -17,9 +17,9 @@ defmodule HackerNewsAggregator.Core do
   def start_link(opts \\ []) do
     server_name = Access.get(opts, :name, __MODULE__)
 
-    opts =
-      Map.new()
-      |> Map.put_new(:storage, Access.get(opts, :storage, StoryStorage))
+    opts = %{
+      storage: Access.get(opts, :storage, StoryStorage)
+    }
 
     GenServer.start_link(__MODULE__, {:ok, opts}, name: server_name)
   end
