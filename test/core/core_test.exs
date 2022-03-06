@@ -1,14 +1,12 @@
 defmodule HackerNewsAggregator.CoreTest do
   use ExUnit.Case, async: true
 
-  alias HackerNewsAggregator.{Core, Core.StoryStorage, Core.Paginator}
+  alias HackerNewsAggregator.{Core, Core.StoryStorage}
 
   setup do
     {:ok, _} = StoryStorage.start_link(name: :story_storage_test)
-    {:ok, _} = Paginator.start_link(name: :paginator_test)
 
-    {:ok, ore} =
-      Core.start_link(name: __MODULE__, storage: :story_storage_test, paginator: :paginator_test)
+    {:ok, ore} = Core.start_link(name: __MODULE__, storage: :story_storage_test)
 
     %{core: core, storage: :story_storage_test}
   end

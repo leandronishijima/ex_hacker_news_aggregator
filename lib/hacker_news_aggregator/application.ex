@@ -13,7 +13,6 @@ defmodule HackerNewsAggregator.Application do
       {HackerNewsAggregator.Core.StoryStorage, args},
       {HackerNewsAggregator.Core.PubSub, args},
       {HackerNewsAggregator.Task.FetchTopStories, args},
-      {HackerNewsAggregator.Core.Paginator, args},
       {HackerNewsAggregator.Core, args},
       {Plug.Cowboy,
        scheme: :http,

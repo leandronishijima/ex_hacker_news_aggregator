@@ -3,38 +3,33 @@ defmodule HackerNewsAggregator.Core.PaginatorTest do
 
   alias HackerNewsAggregator.Core.Paginator
 
-  setup do
-    {:ok, paginator} = Paginator.start_link(name: __MODULE__)
-    %{paginator: paginator}
-  end
-
   describe "paginate/3" do
-    test "when list is empty and page is invalid", %{paginator: paginator} do
+    test "when list is empty and page is invalid" do
       assert %Paginator{valid?: false, list: [], page: 2, total_pages: 0} ==
-               Paginator.paginate(paginator, [], 2)
+               Paginator.paginate([], 2)
     end
 
-    test "when list is empty and page = 1", %{paginator: paginator} do
+    test "when list is empty and page = 1" do
       assert %Paginator{valid?: true, list: [], page: 1, total_pages: 0} ==
-               Paginator.paginate(paginator, [], 1)
+               Paginator.paginate([], 1)
     end
 
-    test "when list is nil", %{paginator: paginator} do
+    test "when list is nil" do
       assert %Paginator{valid?: false, list: [], page: 1, total_pages: 0} ==
-               Paginator.paginate(paginator, nil, 1)
+               Paginator.paginate(nil, 1)
     end
 
-    test "when list is not empty", %{paginator: paginator} do
+    test "when list is not empty" do
       assert %Paginator{valid?: true, list: [1, 2, 3], page: 1, total_pages: 1} ==
-               Paginator.paginate(paginator, 1..3, 1)
+               Paginator.paginate(1..3, 1)
     end
 
-    test "when list is not empty and page is invalid", %{paginator: paginator} do
+    test "when list is not empty and page is invalid" do
       assert %Paginator{valid?: false, list: [], page: 2, total_pages: 1} ==
-               Paginator.paginate(paginator, 1..3, 2)
+               Paginator.paginate(1..3, 2)
     end
 
-    test "when list has 20 lenght and page equal 1", %{paginator: paginator} do
+    test "when list has 20 lenght and page equal 1" do
       assert %Paginator{
                valid?: true,
                list: [
@@ -51,10 +46,10 @@ defmodule HackerNewsAggregator.Core.PaginatorTest do
                ],
                page: 1,
                total_pages: 2
-             } == Paginator.paginate(paginator, 1..20, 1)
+             } == Paginator.paginate(1..20, 1)
     end
 
-    test "when list has 20 lenght and page equal 2", %{paginator: paginator} do
+    test "when list has 20 lenght and page equal 2" do
       assert %Paginator{
                valid?: true,
                list: [
@@ -71,17 +66,17 @@ defmodule HackerNewsAggregator.Core.PaginatorTest do
                ],
                page: 2,
                total_pages: 2
-             } == Paginator.paginate(paginator, 1..20, 2)
+             } == Paginator.paginate(1..20, 2)
     end
 
-    test "when list has 21 lenght and page equal 3", %{paginator: paginator} do
+    test "when list has 21 lenght and page equal 3" do
       stories = 1..21
 
       assert %Paginator{valid?: true, list: [21], page: 3, total_pages: 3} ==
-               Paginator.paginate(paginator, stories, 3)
+               Paginator.paginate(stories, 3)
     end
 
-    test "when list has 50 lenght and page equal 4", %{paginator: paginator} do
+    test "when list has 50 lenght and page equal 4" do
       assert %Paginator{
                valid?: true,
                list: [
@@ -99,7 +94,7 @@ defmodule HackerNewsAggregator.Core.PaginatorTest do
                page: 4,
                total_pages: 5
              } ==
-               Paginator.paginate(paginator, 1..50, 4)
+               Paginator.paginate(1..50, 4)
     end
   end
 end

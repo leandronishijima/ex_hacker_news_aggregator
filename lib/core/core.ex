@@ -20,7 +20,6 @@ defmodule HackerNewsAggregator.Core do
     opts =
       Map.new()
       |> Map.put_new(:storage, Access.get(opts, :storage, StoryStorage))
-      |> Map.put_new(:paginator, Access.get(opts, :paginator, Paginator))
 
     GenServer.start_link(__MODULE__, {:ok, opts}, name: server_name)
   end
@@ -46,12 +45,12 @@ defmodule HackerNewsAggregator.Core do
   def handle_call(
         {:paginate_top_stories, params},
         _from,
-        %{storage: storage, paginator: paginator} = state
+        %{storage: storage} = state
       ) do
     response_json =
       storage
       |> StoryStorage.get_top_stories()
-      |> paginate(paginator, params)
+      |> paginate(params)
       |> to_json()
 
     {:reply, response_json, state}
@@ -115,12 +114,12 @@ defmodule HackerNewsAggregator.Core do
 
   defp to_json(struct), do: Jason.encode(struct)
 
-  defp paginate(nil, paginator, %{"page" => page_param}) do
-    Paginator.paginate(paginator, [], to_integer(page_param))
+  defp paginate(nil, %{"page" => page_param}) do
+    Paginator.paginate([], to_integer(page_param))
   end
 
-  defp paginate(list, paginator, %{"page" => page_param}) do
-    Paginator.paginate(paginator, list, to_integer(page_param))
+  defp paginate(list, %{"page" => page_param}) do
+    Paginator.paginate(list, to_integer(page_param))
   end
 
   defp to_integer(string_number) when is_binary(string_number) do
