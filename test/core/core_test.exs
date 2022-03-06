@@ -6,7 +6,7 @@ defmodule HackerNewsAggregator.CoreTest do
   setup do
     {:ok, _} = StoryStorage.start_link(name: :story_storage_test)
 
-    {:ok, ore} = Core.start_link(name: __MODULE__, storage: :story_storage_test)
+    {:ok, core} = Core.start_link(name: __MODULE__, storage: :story_storage_test)
 
     %{core: core, storage: :story_storage_test}
   end
