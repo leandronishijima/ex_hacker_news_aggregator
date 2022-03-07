@@ -167,15 +167,10 @@ defmodule HackerNewsAggregator.Core do
   defp to_json(struct), do: Jason.encode(struct)
 
   defp paginate(nil, %{"page" => page_param}) do
-    Paginator.paginate([], to_integer(page_param))
+    Paginator.paginate([], page_param)
   end
 
   defp paginate(list, %{"page" => page_param}) do
-    Paginator.paginate(list, to_integer(page_param))
-  end
-
-  defp to_integer(string_number) when is_binary(string_number) do
-    {integer, _} = Integer.parse(string_number)
-    integer
+    Paginator.paginate(list, page_param)
   end
 end
