@@ -83,6 +83,9 @@ defmodule HackerNewsAggregator.Core do
       \"type\": \"story\",
       \"url\": \"https://arunkprasad.com/log/unlearning-perfectionism/\"
     }"
+
+    iex> get_item(HackerNewsAggregator.Core, not_existent_id)
+    nil
   """
   @spec get_item(atom(), non_neg_integer()) :: String.t()
   def get_item(core \\ __MODULE__, item_id) do
