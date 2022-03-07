@@ -9,7 +9,7 @@ defmodule HackerNewsAggregator.Controller.TopStoriesController do
   alias HackerNewsAggregator.Core
 
   @doc """
-  Return %Plug.Conn with top stories paginated in json format.
+  Return %Plug.Conn{} with top stories paginated in json format.
   """
   @spec get_top_stories(%Plug.Conn{params: %{required(String.t()) => String.t()}}, atom()) ::
           %Plug.Conn{}

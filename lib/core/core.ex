@@ -85,7 +85,7 @@ defmodule HackerNewsAggregator.Core do
     iex> get_item(HackerNewsAggregator.Core, not_existent_id)
     nil
   """
-  @spec get_item(atom(), non_neg_integer()) :: String.t()
+  @spec get_item(atom(), id :: String.t()) :: String.t()
   def get_item(core \\ __MODULE__, item_id) do
     GenServer.call(core, {:item, item_id})
   end
