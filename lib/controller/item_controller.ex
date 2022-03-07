@@ -11,11 +11,11 @@ defmodule HackerNewsAggregator.Controller.ItemController do
   @doc """
   Return %Plug.Conn{} with details from item in json format.
   """
-  @spec get_item(%Plug.Conn{}, id :: String.t(), core :: atom()) :: %Plug.Conn{}
-  def get_item(conn, id, core \\ Core) do
+  @spec get_item(%Plug.Conn{}, id :: String.t()) :: %Plug.Conn{}
+  def get_item(conn, id) do
     case Integer.parse(id) do
       {_number, _} ->
-        response_json = Core.get_item(core, id)
+        response_json = Core.get_item(id)
 
         conn
         |> put_resp_content_type("application/json")
