@@ -33,11 +33,13 @@ defmodule HackerNewsAggregator.Core do
   Get top stories without pagination, returning a list of stories id.
 
   ## Example
+    iex> get_top_stories()
+    [30518094,30515014,30517049,30513041,30515750,30485709,30515201,30519936,30512512,30514757]
 
     iex> get_top_stories(HackerNewsAggregator.Core.StoryStorage)
     [30518094,30515014,30517049,30513041,30515750,30485709,30515201,30519936,30512512,30514757]
   """
-  @spec get_top_stories(atom()) :: String.t()
+  @spec get_top_stories(storage :: atom() | none()) :: String.t()
   def get_top_stories(storage \\ StoryStorage) do
     storage
     |> StoryStorage.get_top_stories()

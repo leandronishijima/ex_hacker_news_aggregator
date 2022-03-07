@@ -31,7 +31,7 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
   end
 
   def websocket_info({:broadcast, raw_top_stories}, state) do
-    top_stories = Jason.encode!(raw_top_stories)
+    {:ok, top_stories} = Jason.encode(raw_top_stories)
     {:reply, {:text, top_stories}, state}
   end
 
