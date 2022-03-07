@@ -1,8 +1,18 @@
 defmodule HackerNewsAggregator.Controller.TopStoriesController do
+  @moduledoc """
+  Module controller responsible to receive http connections and return 
+  top stories from the Agent.
+  """
+
   import Plug.Conn
 
   alias HackerNewsAggregator.Core
 
+  @doc """
+  Return %Plug.Conn with top stories paginated in json format.
+  """
+  @spec get_top_stories(%Plug.Conn{params: %{required(String.t()) => String.t()}}, atom()) ::
+          %Plug.Conn{}
   def get_top_stories(conn, core \\ Core)
 
   def get_top_stories(%{params: %{"page" => page}} = conn, core) do
