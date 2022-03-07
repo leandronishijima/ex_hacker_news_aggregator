@@ -2,7 +2,7 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
   use GenServer
 
   alias HackerNewsAggregator.Core.StoryStorage
-  alias HackerNewsAggregator.HackerNewsClient.ApiClient
+  alias HackerNewsAggregator.HackerNews.Api
   alias HackerNewsAggregator.Core.PubSub
 
   # @five_minutes_in_ms 300_000
@@ -35,7 +35,7 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
   end
 
   defp push_top_stories do
-    {:ok, top_stories} = ApiClient.top_stories()
+    {:ok, top_stories} = Api.top_stories()
     StoryStorage.put_top_stories(StoryStorage, top_stories)
 
     PubSub.broadcast(top_stories)

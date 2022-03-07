@@ -8,7 +8,6 @@ defmodule HackerNewsAggregator.Application do
   @impl true
   def start(_type, args) do
     children = [
-      HackerNewsAggregator.HackerNewsClient.ApiClient.child_spec(),
       {Registry, name: Registry, keys: :unique, partitions: System.schedulers()},
       {HackerNewsAggregator.Core.StoryStorage, args},
       {HackerNewsAggregator.Core.PubSub, args},

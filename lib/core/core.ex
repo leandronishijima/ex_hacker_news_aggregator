@@ -8,7 +8,7 @@ defmodule HackerNewsAggregator.Core do
   alias HackerNewsAggregator.{
     Core.StoryStorage,
     Core.Paginator,
-    HackerNewsClient.ApiClient
+    HackerNews.Api
   }
 
   @doc false
@@ -124,7 +124,7 @@ defmodule HackerNewsAggregator.Core do
   @doc false
   @impl true
   def handle_call({:item, id}, _from, state) do
-    {:ok, item} = ApiClient.item(id)
+    {:ok, item} = Api.item(id)
 
     {:ok, response_json} = to_json(item)
 
