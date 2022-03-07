@@ -1,4 +1,8 @@
 defmodule HackerNewsAggregator.Core do
+  @moduledoc """
+  Module responsible for connecting the core business to customer calls.
+  """
+
   use GenServer
 
   alias HackerNewsAggregator.{
@@ -7,6 +11,7 @@ defmodule HackerNewsAggregator.Core do
     HackerNewsClient.ApiClient
   }
 
+  @doc false
   def child_spec(init_arg) do
     %{
       id: __MODULE__,
@@ -14,6 +19,7 @@ defmodule HackerNewsAggregator.Core do
     }
   end
 
+  @doc false
   def start_link(opts \\ []) do
     server_name = Access.get(opts, :name, __MODULE__)
 
@@ -24,23 +30,66 @@ defmodule HackerNewsAggregator.Core do
     GenServer.start_link(__MODULE__, {:ok, opts}, name: server_name)
   end
 
+  @doc false
   @impl true
   def init({:ok, opts}) do
     {:ok, opts}
   end
 
+  @doc """
+  Get top stories with pagination, returning a json as result.
+
+  ## Examples
+
+    iex> get_paginate_top_stories(HackerNewsAggregator.Core, %{"page" => 1})
+    "{\"page\":1,\"top_stories\":[1,2,3,4,5,6,7,8,9,10],\"total_pages\":1}"
+
+    iex> get_paginate_top_stories(HackerNewsAggregator.Core, %{"page" => -1})
+    "{\"page\":0,\"top_stories\":[],\"total_pages\":1}"
+  """
+  @spec get_paginate_top_stories(atom(), %{required(String.t()) => non_neg_integer()}) ::
+          String.t()
   def get_paginate_top_stories(core \\ __MODULE__, params) do
     GenServer.call(core, {:paginate_top_stories, params})
   end
 
+  @doc """
+  Get top stories without pagination, returning a list of stories id.
+
+  ## Example
+
+    iex> get_top_stories(HackerNewsAggregator.Core)
+    [30518094,30515014,30517049,30513041,30515750,30485709,30515201,30519936,30512512,30514757]
+  """
+  @spec get_top_stories(atom()) :: list(non_neg_integer())
   def get_top_stories(core \\ __MODULE__) do
     GenServer.call(core, :top_stories)
   end
 
+  @doc """
+  Get details from a single story, returning string in jason format.
+
+  ## Example
+
+    iex> get_item(HackerNewsAggregator.Core, 30518094)
+    "{
+      \"by\": \"akprasad\",
+      \"descendants\": 57,
+      \"id\": 30223559,
+      \"kids\": [30224014,30224483,30225709,30227150],
+      \"score\": 284,
+      \"time\": 1644083044,
+      \"title\": \"Unlearning perfectionism\",
+      \"type\": \"story\",
+      \"url\": \"https://arunkprasad.com/log/unlearning-perfectionism/\"
+    }"
+  """
+  @spec get_item(atom(), non_neg_integer()) :: String.t()
   def get_item(core \\ __MODULE__, item_id) do
     GenServer.call(core, {:item, item_id})
   end
 
+  @doc false
   @impl true
   def handle_call(
         {:paginate_top_stories, params},
@@ -56,6 +105,7 @@ defmodule HackerNewsAggregator.Core do
     {:reply, response_json, state}
   end
 
+  @doc false
   @impl true
   def handle_call(
         :top_stories,
@@ -70,6 +120,7 @@ defmodule HackerNewsAggregator.Core do
     {:reply, top_stories, state}
   end
 
+  @doc false
   @impl true
   def handle_call({:item, id}, _from, state) do
     {:ok, item} = ApiClient.item(id)
