@@ -1,6 +1,8 @@
 defmodule HackerNewsAggregator.CoreTest do
   use ExUnit.Case, async: true
 
+  import Mox
+
   alias HackerNewsAggregator.{Core, Core.StoryStorage}
 
   setup do
@@ -8,6 +10,8 @@ defmodule HackerNewsAggregator.CoreTest do
 
     %{storage: :story_storage_test}
   end
+
+  setup :verify_on_exit!
 
   describe "get_paginate_top_stories/2" do
     test "when registry have stories and the page number is negative", %{
@@ -43,6 +47,15 @@ defmodule HackerNewsAggregator.CoreTest do
 
       assert "{\"page\":5,\"top_stories\":[41,42,43,44,45,46,47,48,49,50],\"total_pages\":5}" ==
                Core.get_paginate_top_stories(storage, %{"page" => 5})
+    end
+  end
+
+  describe "get_item/1" do
+    test "when item doesnt exists" do
+      HackerNewsAggregator.HackerNews.MockApi
+      |> expect(:item, fn _item_id -> {:ok, nil} end)
+
+      assert is_nil(Core.get_item(199_910_101))
     end
   end
 end

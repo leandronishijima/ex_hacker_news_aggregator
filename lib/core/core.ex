@@ -69,10 +69,14 @@ defmodule HackerNewsAggregator.Core do
   """
   @spec get_item(item_id :: String.t()) :: String.t()
   def get_item(item_id) do
-    {:ok, item} = Api.item(item_id)
-    {:ok, json_item} = to_json(item)
+    {:ok, item_found} = Api.item(item_id)
 
-    json_item
+    unless is_nil(item_found) do
+      {:ok, item_json} = to_json(item_found)
+      item_json
+    else
+      nil
+    end
   end
 
   defp to_json(%Paginator{valid?: false, page: page}) do
