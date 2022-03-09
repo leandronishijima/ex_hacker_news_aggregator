@@ -57,5 +57,31 @@ defmodule HackerNewsAggregator.CoreTest do
 
       assert is_nil(Core.get_item(199_910_101))
     end
+
+    test "when item exists" do
+      HackerNewsAggregator.HackerNews.MockApi
+      |> expect(:item, fn _item_id ->
+        {:ok,
+         %{
+           "by" => "ny_entrepreneur",
+           "id" => 3_029_946,
+           "parent" => 3_028_322,
+           "text" => "text from item",
+           "kids" => [30_293_946, 30_294_081, 30_294_010, 30_295_007],
+           "time" => 1_316_785_698,
+           "type" => "comment"
+         }}
+      end)
+
+      assert %{
+               "by" => "ny_entrepreneur",
+               "id" => 3_029_946,
+               "parent" => 3_028_322,
+               "text" => "text from item",
+               "kids" => [30_293_946, 30_294_081, 30_294_010, 30_295_007],
+               "time" => 1_316_785_698,
+               "type" => "comment"
+             } == Core.get_item(3_029_946) |> Jason.decode!()
+    end
   end
 end
