@@ -10,17 +10,19 @@ defmodule HackerNewsAggregator.Controller.TopStoriesController do
 
   @doc """
   Return %Plug.Conn{} with top stories paginated in json format.
-  """
-  @spec get_top_stories(%Plug.Conn{params: %{required(String.t()) => String.t()}}) ::
-          %Plug.Conn{}
-  def get_top_stories(conn)
 
-  def get_top_stories(%{params: %{"page" => page}} = conn) do
+  Returns `%Plug.Conn`
+  """
+  @spec get_top_stories(%Plug.Conn{params: %{required(String.t()) => String.t()}}, atom()) ::
+          %Plug.Conn{}
+  def get_top_stories(conn, storage \\ HackerNewsAggregator.Core.StoryStorage)
+
+  def get_top_stories(%{params: %{"page" => page}} = conn, storage) do
     case Integer.parse(page) do
       {parsed_page, _} ->
         new_params = Map.update(conn.params, "page", parsed_page, fn _ -> parsed_page end)
 
-        response_json = Core.get_paginate_top_stories(new_params)
+        response_json = Core.get_paginate_top_stories(storage, new_params)
 
         conn
         |> put_resp_content_type("application/json")
@@ -31,7 +33,7 @@ defmodule HackerNewsAggregator.Controller.TopStoriesController do
     end
   end
 
-  def get_top_stories(conn), do: send_invalid_parameter(conn)
+  def get_top_stories(conn, _storage), do: send_invalid_parameter(conn)
 
   defp send_invalid_parameter(conn) do
     conn
