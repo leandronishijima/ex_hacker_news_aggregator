@@ -67,7 +67,7 @@ defmodule HackerNewsAggregator.Core do
     iex> get_item(not_existent_id)
     nil
   """
-  @spec get_item(item_id :: String.t()) :: String.t()
+  @spec get_item(item_id :: String.t()) :: String.t() | nil
   def get_item(item_id) do
     {:ok, item_found} = Api.item(item_id)
 
