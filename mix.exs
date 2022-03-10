@@ -31,7 +31,8 @@ defmodule HackerNewsAggregator.MixProject do
       {:hackney, "~> 1.17"},
       {:jason, "~> 1.3"},
       {:plug_cowboy, "~> 2.5"},
-      {:mox, "~> 1.0", only: :test}
+      {:mox, "~> 1.0", only: :test},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 end
