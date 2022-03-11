@@ -1,5 +1,8 @@
 # Hacker News Aggregator
 
+The Hacker News Aggregator fetches top stories from Hacker News Api and makes available
+into endpoints and websocket.
+
 ## API Reference
 
 #### Get paginated top stories from **Hacker News**
@@ -98,10 +101,12 @@ To run tests, run the following command
   mix test
 ```
 
-
 ## Tech Stack
+
 **Lang:** Elixir
 
-**Server:** [plug_cowboy](https://hex.pm/packages/plug_cowboy), [tesla](https://hex.pm/packages/tesla), [jason](https://hex.pm/packages/jason)
-
-**Dev:** [mox](https://hex.pm/packages/mox), [credo](https://hex.pm/packages/credo)
+- [plug_cowboy](https://hex.pm/packages/plug_cowboy)
+- [tesla](https://hex.pm/packages/tesla)
+- [jason](https://hex.pm/packages/jason)
+- [mox](https://hex.pm/packages/mox)
+- [credo](https://hex.pm/packages/credo)
