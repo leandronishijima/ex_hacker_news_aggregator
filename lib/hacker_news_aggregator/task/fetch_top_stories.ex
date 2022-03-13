@@ -1,13 +1,20 @@
 defmodule HackerNewsAggregator.Task.FetchTopStories do
+  @doc """
+  Module reponsible to fetch top stories from hacker news Api
+  """
+
   use GenServer
 
-  alias HackerNewsAggregator.Core.StoryStorage
+  alias HackerNewsAggregator.Core.{StoryStorage, PubSub}
   alias HackerNewsAggregator.HackerNews.Api
-  alias HackerNewsAggregator.Core.PubSub
 
-  # @five_minutes_in_ms 300_000
-  @five_minutes_in_ms 3_000
+  @fetch_interval_time_in_seconds Application.get_env(
+                                    :ex_hacker_news_aggregator,
+                                    :fetch_interval_time,
+                                    300
+                                  )
 
+  @doc false
   def child_spec(init_arg) do
     %{
       id: __MODULE__,
@@ -15,29 +22,42 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
     }
   end
 
-  def start_link(state) do
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  @doc false
+  def start_link(opts) do
+    task_name = Access.get(opts, :name, __MODULE__)
+    storage_name = Access.get(opts, :storage, StoryStorage)
+    pubsub_name = Access.get(opts, :pubsub, PubSub)
+
+    state =
+      Map.new()
+      |> Map.put_new(:name, task_name)
+      |> Map.put_new(:storage, storage_name)
+      |> Map.put_new(:pubsub, pubsub_name)
+
+    GenServer.start_link(__MODULE__, state, name: task_name)
   end
 
   @impl true
-  def init(state) do
-    push_top_stories()
-    :timer.send_interval(@five_minutes_in_ms, :fetch)
+  @doc false
+  def init(%{storage: storage, pubsub: pubsub} = state) do
+    push_top_stories(storage, pubsub)
+    :timer.send_interval(:timer.seconds(@fetch_interval_time_in_seconds), :fetch)
 
     {:ok, state}
   end
 
   @impl true
-  def handle_info(:fetch, state) do
-    push_top_stories()
+  @doc false
+  def handle_info(:fetch, %{storage: storage, pubsub: pubsub} = state) do
+    push_top_stories(storage, pubsub)
 
     {:noreply, state}
   end
 
-  defp push_top_stories do
+  defp push_top_stories(storage, pubsub) do
     {:ok, top_stories} = Api.top_stories()
-    StoryStorage.put_top_stories(StoryStorage, top_stories)
+    StoryStorage.put_top_stories(storage, top_stories)
 
-    PubSub.broadcast(top_stories)
+    PubSub.broadcast(pubsub, top_stories)
   end
 end
