@@ -18,24 +18,25 @@ defmodule HackerNewsAggregator.HackerNews.ApiImpl do
   ## Examples
     iex> top_stories()
     {:ok, 
-    [
-      30582202,
-      30580444,
-      30566119,
-      30582986,
-      30579884,
-      30582877,
-      30581735,
-      30578938,
-      30583059,
-      30566741
-    ]
+      [
+        30582202,
+        30580444,
+        30566119,
+        30582986,
+        30579884,
+        30582877,
+        30581735,
+        30578938,
+        30583059,
+        30566741
+      ]
     }
   """
   @impl Api
   @spec top_stories() :: {:ok, list(non_neg_integer())}
   def top_stories do
-    get("/topstories.json", query: [print: "pretty", limitToFirst: 50, orderBy: "\"$key\""])
+    "/topstories.json"
+    |> get(query: [limitToFirst: 50, orderBy: "\"$key\""])
     |> return_body()
   end
 
@@ -62,7 +63,8 @@ defmodule HackerNewsAggregator.HackerNews.ApiImpl do
   @impl Api
   @spec item(id :: String.t()) :: {:ok, map()}
   def item(id) do
-    get("/item/#{id}.json")
+    "/item/#{id}.json"
+    |> get()
     |> return_body()
   end
 
