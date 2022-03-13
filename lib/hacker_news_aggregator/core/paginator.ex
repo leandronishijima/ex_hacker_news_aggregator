@@ -41,12 +41,10 @@ defmodule HackerNewsAggregator.Core.Paginator do
   end
 
   def paginate([], page) do
-    cond do
-      page > 1 ->
-        %__MODULE__{valid?: false, page: page}
-
-      true ->
-        %__MODULE__{valid?: true, page: page}
+    if page > 1 do
+      %__MODULE__{valid?: false, page: page}
+    else
+      %__MODULE__{valid?: true, page: page}
     end
   end
 
