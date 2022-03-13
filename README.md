@@ -67,6 +67,16 @@ into endpoints and websocket.
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `string` | **Required**. Id of item to fetch |
 
+### Websocket
+
+```http
+  ws://localhost:4001/ws/top_stories
+```
+
+- Response (array of top stories):
+```json
+[30660534,30659164,30660203,30660000,30656961, ..., 30631605]
+```
 
 ## Run Locally
 
@@ -82,7 +92,21 @@ Go to the project directory
   cd ex_hacker_news_aggregator
 ```
 
-Install dependencies
+Install elixir/erlang versions / dependencies
+
+**If you use asdf manager**
+```bash
+  asdf install
+```
+
+**If you don't, use this versions:**
+
+````
+elixir 1.12.3-otp-23
+erlang 23.3.4.10
+````
+
+- Install the dependencies:
 
 ```bash
   mix deps.get
