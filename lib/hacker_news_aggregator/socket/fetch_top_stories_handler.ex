@@ -1,13 +1,18 @@
 defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
+  @moduledoc """
+  Module responsible to handler Websocket api to fetch top top stories from persisted module
+  """
   @behaviour :cowboy_websocket
 
   alias HackerNewsAggregator.Core
   alias HackerNewsAggregator.Core.PubSub
 
+  @doc false
   def init(_, _req, _opts) do
     {:upgrade, :protocol, :cowboy_websocket}
   end
 
+  @doc false
   def init(req, state \\ []) do
     pubsub = Access.get(state, :pubsub, PubSub)
 
@@ -18,6 +23,7 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
     {:cowboy_websocket, req, state}
   end
 
+  @doc false
   def websocket_init(state) do
     {:ok, state}
   end
@@ -35,6 +41,7 @@ defmodule HackerNewsAggregator.Socket.FetchTopStoriesHandler do
     {:reply, {:text, top_stories}, state}
   end
 
+  @doc false
   def terminate(_reason, _req, _state) do
     :ok
   end

@@ -11,10 +11,9 @@ defmodule HackerNewsAggregator.Controller.TopStoriesController do
   @doc """
   Return %Plug.Conn{} with top stories paginated in json format.
 
-  Returns `%Plug.Conn`
+  Returns `%Plug.Conn{}`
   """
-  @spec get_top_stories(%Plug.Conn{params: %{required(String.t()) => String.t()}}, atom()) ::
-          %Plug.Conn{}
+  @spec get_top_stories(Plug.Conn.t(), atom()) :: Plug.Conn.t()
   def get_top_stories(conn, storage \\ HackerNewsAggregator.Core.StoryStorage)
 
   def get_top_stories(%{params: %{"page" => page}} = conn, storage) do

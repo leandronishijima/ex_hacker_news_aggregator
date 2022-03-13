@@ -1,4 +1,8 @@
 defmodule HackerNewsAggregator.HackerNews.Api do
+  @moduledoc """
+  Module responsible to define a behaviour to Api implementation.
+  """
+
   @callback top_stories() :: {:ok, list(non_neg_integer())}
   @callback item(id :: String.t()) :: {:ok, map()}
 

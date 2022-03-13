@@ -1,5 +1,5 @@
 defmodule HackerNewsAggregator.Task.FetchTopStories do
-  @doc """
+  @moduledoc """
   Module reponsible to fetch top stories from hacker news Api
   """
 
@@ -7,12 +7,6 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
 
   alias HackerNewsAggregator.Core.{StoryStorage, PubSub}
   alias HackerNewsAggregator.HackerNews.Api
-
-  @fetch_interval_time_in_seconds Application.get_env(
-                                    :ex_hacker_news_aggregator,
-                                    :fetch_interval_time,
-                                    300
-                                  )
 
   @doc false
   def child_spec(init_arg) do
@@ -41,7 +35,7 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
   @doc false
   def init(%{storage: storage, pubsub: pubsub} = state) do
     push_top_stories(storage, pubsub)
-    :timer.send_interval(:timer.seconds(@fetch_interval_time_in_seconds), :fetch)
+    schedule_send_interval()
 
     {:ok, state}
   end
@@ -59,5 +53,15 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
     StoryStorage.put_top_stories(storage, top_stories)
 
     PubSub.broadcast(pubsub, top_stories)
+  end
+
+  defp schedule_send_interval do
+    Application.get_env(
+      :ex_hacker_news_aggregator,
+      :fetch_interval_time,
+      300
+    )
+    |> :timer.seconds()
+    |> :timer.send_interval(:fetch)
   end
 end

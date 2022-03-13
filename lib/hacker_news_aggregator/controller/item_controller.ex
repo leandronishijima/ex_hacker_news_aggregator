@@ -13,7 +13,7 @@ defmodule HackerNewsAggregator.Controller.ItemController do
 
   Returns `%Plug.Conn{}`
   """
-  @spec get_item(%Plug.Conn{}, id :: String.t()) :: %Plug.Conn{}
+  @spec get_item(Plug.Conn.t(), id :: String.t()) :: Plug.Conn.t()
   def get_item(conn, id) do
     case Integer.parse(id) do
       {_number, _} ->

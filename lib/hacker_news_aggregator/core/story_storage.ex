@@ -1,4 +1,7 @@
 defmodule HackerNewsAggregator.Core.StoryStorage do
+  @moduledoc """
+  Module responsible to persist stories.
+  """
   use Agent
 
   @name __MODULE__
