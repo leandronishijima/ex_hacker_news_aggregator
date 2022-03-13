@@ -5,6 +5,8 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
 
   use GenServer
 
+  require Logger
+
   alias HackerNewsAggregator.Core.{StoryStorage, PubSub}
   alias HackerNewsAggregator.HackerNews.Api
 
@@ -51,6 +53,8 @@ defmodule HackerNewsAggregator.Task.FetchTopStories do
   defp push_top_stories(storage, pubsub) do
     {:ok, top_stories} = Api.top_stories()
     StoryStorage.put_top_stories(storage, top_stories)
+
+    Logger.info("New top stories was refreshed")
 
     PubSub.broadcast(pubsub, top_stories)
   end

@@ -5,6 +5,8 @@ defmodule HackerNewsAggregator.Core.PubSub do
 
   use GenServer
 
+  require Logger
+
   @registry_key_websockets "connected_websockets"
 
   @doc """
@@ -56,6 +58,8 @@ defmodule HackerNewsAggregator.Core.PubSub do
   @impl true
   def handle_cast({:broadcast, top_stories}, %{registry: registry} = state) do
     Registry.dispatch(registry, @registry_key_websockets, fn entries ->
+      Logger.info("Dispatching new top stories to websockets connected")
+
       for {_owner, websocket_pid} <- entries do
         send(websocket_pid, {:broadcast, top_stories})
       end
@@ -68,11 +72,13 @@ defmodule HackerNewsAggregator.Core.PubSub do
   @impl true
   def handle_call({:subscribe_websocket, pid}, _from, %{registry: registry} = state) do
     case Registry.register(registry, @registry_key_websockets, pid) do
-      {:ok, _pid} ->
+      {:ok, pid_registred} ->
+        Logger.info("Pid registred #{inspect(pid_registred)}")
         {:reply, {:ok, pid}, state}
 
-      {:error, {:already_registered, _pid}} ->
-        {:reply, {:warn, "process already registered", pid}, state}
+      {:error, {:already_registered, warn_pid}} ->
+        Logger.warn("Process already registed #{inspect(warn_pid)}")
+        {:reply, {:warn, "process already registered", warn_pid}, state}
     end
   end
 
