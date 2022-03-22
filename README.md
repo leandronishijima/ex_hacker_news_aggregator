@@ -117,12 +117,27 @@ Start the server
 ```bash
   iex -S mix
 ```
+
 ## Running Tests
 
 To run tests, run the following command
 
 ```bash
   mix test
+```
+
+## Release
+
+To generate release for this project run
+
+```bash
+  MIX_ENV=prod mix release hacker_news_aggregator
+```
+
+To run the artifact 
+
+```bash
+  _build/prod/rel/hacker_news_aggregator/bin/hacker_news_aggregator start
 ```
 
 ## Tech Stack
