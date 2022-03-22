@@ -8,7 +8,12 @@ defmodule HackerNewsAggregator.MixProject do
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      releases: [
+        hacker_news_aggregator: [
+          include_executables_for: [:unix]
+        ]
+      ]
     ]
   end
 
